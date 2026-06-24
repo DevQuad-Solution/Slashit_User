@@ -1,5 +1,6 @@
 // ─── SlashIt API Service ──────────────────────────────────────────────────────
 // Base URL — swap to http://localhost:5004 for local dev
+// const BASE = "http://localhost:5004/api";
 const BASE = 'https://slashit-g2og.onrender.com/api';
 
 // ─── Token helpers ────────────────────────────────────────────────────────────
