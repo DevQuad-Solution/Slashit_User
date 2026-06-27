@@ -21,8 +21,7 @@ body {
 /* ── Prevent horizontal overflow ── */
 html, body {
   max-width: 100vw;
-  height: 100%;
-  overflow: hidden; /* scroll is handled by .app-main */
+  overflow-x: hidden;
 }
 
 /* ── Tables: scrollable on small screens ── */

@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// const BASE_URL = "http://localhost:5004/api";
 const BASE_URL = 'https://slashit-g2og.onrender.com/api';
 const TOKEN_KEY = 'slashit_token';
 const SESSION_KEY = 'slashit_session';

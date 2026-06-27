@@ -111,7 +111,7 @@ export function Profile() {
   ];
 
   return (
-    <div style={{ background:'#f0f4ff', minHeight:'auto', paddingBottom:100 }}>
+    <div style={{ background:'#f0f4ff', minHeight:'100vh', paddingBottom:120 }}>
       {/* Hero */}
       <div style={{ background:'linear-gradient(135deg,#1e3a8a,#2563eb)', padding:'52px 20px 24px', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:-40, right:-40, width:180, height:180, borderRadius:'50%', background:'rgba(255,255,255,.06)' }}/>

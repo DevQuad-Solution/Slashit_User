@@ -61,8 +61,7 @@ import { FAQPage }          from './features/static/pages/FAQPage';
 const CSS = `
   *{margin:0;padding:0;box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  html,body{height:100%;overflow:hidden}
-  body{background:#f0f4ff;color:#1e293b;font-family:'Inter',system-ui,sans-serif;font-size:14px;margin:0;position:relative;-webkit-font-smoothing:antialiased}
+  body{background:#f0f4ff;color:#1e293b;font-family:'Inter',system-ui,sans-serif;font-size:14px;margin:0;min-height:100vh;position:relative;-webkit-font-smoothing:antialiased}
   input:not([type=checkbox]):not([type=radio]),textarea,select{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;color:#1e293b;font-size:16px;width:100%;outline:none;transition:border-color .2s;font-family:inherit;-webkit-appearance:none;appearance:none}
   input[type=checkbox],input[type=radio]{-webkit-appearance:auto;appearance:auto}
   input:focus,textarea:focus,select:focus{border-color:#2563eb;background:#fff}
@@ -90,16 +89,14 @@ table{border-collapse:collapse}
 :root{--sidebar-w:220px}
 /* Desktop layout — sidebar visible, bottom nav hidden */
 @media(min-width:900px){
-  .app-layout{display:flex;height:100vh;overflow:hidden}
   .app-sidebar{display:flex}
-  .app-main{margin-left:var(--sidebar-w);flex:1;min-width:0;transition:margin-left .25s;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;height:100vh}
+  .app-main{margin-left:var(--sidebar-w);flex:1;min-width:0;transition:margin-left .25s;padding-bottom:0;height:100vh;overflow-y:auto}
   .bottom-nav-wrap{display:none!important}
 }
 /* Mobile — no sidebar, show bottom nav */
 @media(max-width:899px){
-  .app-layout{display:block;height:100vh;overflow:hidden}
   .app-sidebar{display:none!important}
-  .app-main{margin-left:0!important;width:100%;height:100vh;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  .app-main{margin-left:0!important;max-width:100%}
   .bottom-nav-wrap{display:block}
   .app-main-inner{padding-bottom:80px}
 }
@@ -143,13 +140,13 @@ function Protected({ children }) {
 
 function AppLayout({ children }) {
   return (
-    <div className="app-layout">
+    <>
       <AppSidebar />
       <div className="app-main">
         <div className="app-main-inner">{children}</div>
       </div>
       <div className="bottom-nav-wrap"><BottomNav /></div>
-    </div>
+    </>
   );
 }
 
