@@ -17,19 +17,32 @@
  * kept in sync by App.jsx itself during incremental migration.
  */
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { setAuthToken, clearAuthToken, getAuthToken } from '../lib/axios';
-import { getMe } from '../services/auth.service';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { setAuthToken, clearAuthToken, getAuthToken } from "../lib/axios";
+import { getMe } from "../services/auth.service";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext(null);
 
-const SESSION_KEY = 'slashit_session';
+const SESSION_KEY = "slashit_session";
 
 const saveSession = (user) => {
-  try { localStorage.setItem(SESSION_KEY, JSON.stringify(user)); } catch {}
+  try {
+    Cookies.set(SESSION_KEY, JSON.stringify(user));
+  } catch {}
 };
 const loadSession = () => {
-  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; }
+  try {
+    return JSON.parse(Cookies.get(SESSION_KEY) || "null");
+  } catch {
+    return null;
+  }
 };
 
 export function AuthProvider({ children }) {
@@ -40,7 +53,7 @@ export function AuthProvider({ children }) {
   const persistUser = useCallback((next) => {
     _setUser(next);
     if (next) saveSession(next);
-    else localStorage.removeItem(SESSION_KEY);
+    else Cookies.remove(SESSION_KEY);
   }, []);
 
   // On mount — if token exists but no in-memory session, restore from /auth/me
@@ -55,11 +68,11 @@ export function AuthProvider({ children }) {
         })
         .catch(() => {
           clearAuthToken();
-          localStorage.removeItem(SESSION_KEY);
+          Cookies.remove(SESSION_KEY);
         })
         .finally(() => setLoading(false));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Merge a partial update into the session.
@@ -67,7 +80,8 @@ export function AuthProvider({ children }) {
   //        updateUser({ kycStatus: 'verified' })
   const updateUser = useCallback((patch) => {
     _setUser((prev) => {
-      const next = typeof patch === 'function' ? patch(prev) : { ...prev, ...patch };
+      const next =
+        typeof patch === "function" ? patch(prev) : { ...prev, ...patch };
       saveSession(next);
       return next;
     });
@@ -75,44 +89,59 @@ export function AuthProvider({ children }) {
 
   // Called after successful POST /auth/onboarding
   // onboarding response: data: { user: {..., userAccountDetails}, accessToken }
-  const loginFromOnboarding = useCallback((responseData, hubId, hubName, hubCity, hubState) => {
-    const { user: backendUser, accessToken } = responseData;
-    setAuthToken(accessToken);
-    const session = {
-      ...backendUser,
-      id:            backendUser._id,
-      hubId:         backendUser.hub || hubId,
-      hubName:       hubName || '',
-      city:          hubCity  || backendUser.city  || '',
-      state:         hubState || backendUser.state || '',
-      kycStatus:     (backendUser.kyc?.status || 'Unverified').toLowerCase(),
-      accountNumber: backendUser.userAccountDetails?.accountNumber || '',
-      accountName:   backendUser.userAccountDetails?.accountName  || '',
-      accountBank:   backendUser.userAccountDetails?.bankName     || 'Wema bank',
-    };
-    persistUser(session);
-  }, [persistUser]);
+  const loginFromOnboarding = useCallback(
+    (responseData, hubId, hubName, hubCity, hubState) => {
+      const { user: backendUser, accessToken } = responseData;
+      setAuthToken(accessToken);
+      const session = {
+        ...backendUser,
+        id: backendUser._id,
+        hubId: backendUser.hub || hubId,
+        hubName: hubName || "",
+        city: hubCity || backendUser.city || "",
+        state: hubState || backendUser.state || "",
+        kycStatus: (backendUser.kyc?.status || "Unverified").toLowerCase(),
+        accountNumber: backendUser.userAccountDetails?.accountNumber || "",
+        accountName: backendUser.userAccountDetails?.accountName || "",
+        accountBank: backendUser.userAccountDetails?.bankName || "Wema bank",
+      };
+      persistUser(session);
+    },
+    [persistUser],
+  );
 
   // Called after successful POST /auth/signin
   // signin response: data: { user: {...}, accessToken }
-  const loginFromSignin = useCallback((responseData, previousSession = {}) => {
-    const { user: backendUser, accessToken } = responseData;
-    setAuthToken(accessToken);
-    const session = {
-      ...previousSession,
-      ...backendUser,
-      id:            backendUser._id,
-      kycStatus:     (backendUser.kyc?.status || 'Unverified').toLowerCase(),
-      accountNumber: backendUser.userAccountDetails?.accountNumber || previousSession.accountNumber || '',
-      accountName:   backendUser.userAccountDetails?.accountName  || previousSession.accountName  || '',
-      accountBank:   backendUser.userAccountDetails?.bankName     || previousSession.accountBank  || 'Wema bank',
-      hubId:         backendUser.hub || previousSession.hubId  || '',
-      hubName:       previousSession.hubName || '',
-      city:          previousSession.city    || '',
-      state:         previousSession.state   || '',
-    };
-    persistUser(session);
-  }, [persistUser]);
+  const loginFromSignin = useCallback(
+    (responseData, previousSession = {}) => {
+      const { user: backendUser, accessToken } = responseData;
+      setAuthToken(accessToken);
+      const session = {
+        ...previousSession,
+        ...backendUser,
+        id: backendUser._id,
+        kycStatus: (backendUser.kyc?.status || "Unverified").toLowerCase(),
+        accountNumber:
+          backendUser.userAccountDetails?.accountNumber ||
+          previousSession.accountNumber ||
+          "",
+        accountName:
+          backendUser.userAccountDetails?.accountName ||
+          previousSession.accountName ||
+          "",
+        accountBank:
+          backendUser.userAccountDetails?.bankName ||
+          previousSession.accountBank ||
+          "Wema bank",
+        hubId: backendUser.hub || previousSession.hubId || "",
+        hubName: previousSession.hubName || "",
+        city: previousSession.city || "",
+        state: previousSession.state || "",
+      };
+      persistUser(session);
+    },
+    [persistUser],
+  );
 
   // Merge fresh /auth/me data into session (preserves hub fields backend omits)
   const refreshUser = useCallback((meData) => {
@@ -121,17 +150,26 @@ export function AuthProvider({ children }) {
       const next = {
         ...prev,
         ...meData,
-        id:            meData._id || prev?.id,
-        kycStatus:     (meData.kyc?.status || prev?.kycStatus || 'unverified').toLowerCase(),
-        accountNumber: meData.userAccountDetails?.accountNumber || prev?.accountNumber || '',
-        accountName:   meData.userAccountDetails?.accountName  || prev?.accountName  || '',
-        accountBank:   meData.userAccountDetails?.bankName     || prev?.accountBank  || 'Wema bank',
+        id: meData._id || prev?.id,
+        kycStatus: (
+          meData.kyc?.status ||
+          prev?.kycStatus ||
+          "unverified"
+        ).toLowerCase(),
+        accountNumber:
+          meData.userAccountDetails?.accountNumber || prev?.accountNumber || "",
+        accountName:
+          meData.userAccountDetails?.accountName || prev?.accountName || "",
+        accountBank:
+          meData.userAccountDetails?.bankName ||
+          prev?.accountBank ||
+          "Wema bank",
         walletBalance: meData.walletBalance ?? prev?.walletBalance ?? 0,
         // Preserve hub fields — backend /auth/me may not return them
-        hubId:   prev?.hubId   || '',
-        hubName: prev?.hubName || '',
-        city:    prev?.city    || '',
-        state:   prev?.state   || '',
+        hubId: prev?.hubId || "",
+        hubName: prev?.hubName || "",
+        city: prev?.city || "",
+        state: prev?.state || "",
       };
       saveSession(next);
       return next;
@@ -140,13 +178,21 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     clearAuthToken();
-    localStorage.removeItem(SESSION_KEY);
+    Cookies.remove(SESSION_KEY);
     _setUser(null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, updateUser, loginFromOnboarding, loginFromSignin, refreshUser, logout }}
+      value={{
+        user,
+        loading,
+        updateUser,
+        loginFromOnboarding,
+        loginFromSignin,
+        refreshUser,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -155,6 +201,6 @@ export function AuthProvider({ children }) {
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 };

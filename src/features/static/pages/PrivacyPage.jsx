@@ -16,6 +16,7 @@ import { useSession } from '../../../hooks/useSession';
 import { useAuth } from '../../../context/AuthContext';
 import { Btn, Card, Input, Badge, FillBar, Modal } from '../../../components/ui';
 import { LegalFooter } from '../../../components/layout/LegalFooter';
+import Cookies from "js-cookie";
 
 export function Privacy() {
   const nav = useNavigate();
