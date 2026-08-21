@@ -116,7 +116,7 @@ export function FundWallet() {
 
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         {/* Quick amounts */}
-        <div>
+        {/* <div>
           <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 10 }}>Quick Amounts</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
             {QUICK.map(a => (
@@ -130,10 +130,10 @@ export function FundWallet() {
               Custom
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Custom input */}
-        <div>
+        {/* <div>
           <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 8 }}>Or Enter Amount</div>
           <div style={{ position: 'relative' }}>
             <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 18, fontWeight: 700, color: '#94a3b8' }}>₦</span>
@@ -141,22 +141,22 @@ export function FundWallet() {
               placeholder="0" style={{ paddingLeft: 36, fontSize: 18, fontWeight: 700 }} />
           </div>
           <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>Minimum {fmt(MIN_FUND)} · Updates in ~15 seconds</div>
-        </div>
+        </div> */}
 
-        {num > 0 && (
+        {/* {num > 0 && (
           <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '12px 14px', fontSize: 13, fontWeight: 600, color: '#15803d' }}>
             After transfer: <strong>{fmt((user.walletBalance || 0) + num)}</strong>
           </div>
-        )}
+        )} */}
 
         {/* Funding disclaimer */}
         <div style={{ background:'#fef9c3', border:'1px solid #fde68a', borderRadius:12, padding:'12px 14px', fontSize:11, color:'#78350f', lineHeight:1.6 }}>
-          ⚠️ <strong>Wallet Funding Disclaimer:</strong> Funds added to your wallet are held securely on SlashIt. They are released to suppliers only after delivery is verified by a hub attendant. Once used to join a slash, funds are non-withdrawable. Refunds for cancelled or dissolved slashes are processed within 24–48 hours.
+          ⚠️ <strong>Wallet Funding Disclaimer: Transfers made to your account are processed and reflects immediately within 5 minutes.</strong> Funds added to your wallet are held securely on SlashIt. They are released to suppliers only after delivery is verified by a hub attendant. Once used to join a slash, funds are non-withdrawable. Refunds for cancelled or dissolved slashes are processed within 24–48 hours.
         </div>
 
-        <Btn full loading={loading} disabled={num < MIN_FUND} onClick={confirm}>
+        {/* <Btn full loading={loading} disabled={num < MIN_FUND} onClick={confirm}>
           I&apos;ve Made the Transfer — Verify ✓
-        </Btn>
+        </Btn> */}
 
         <div style={{ textAlign: 'center', fontSize: 12, color: '#94a3b8', lineHeight: 1.6 }}>
           Bank transfer · Payment infrastructure being implemented through supported provider channels
